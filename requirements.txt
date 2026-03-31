@@ -10,3 +10,4 @@ joblib
 transformers
 torch
 openpyxl
+jinja
