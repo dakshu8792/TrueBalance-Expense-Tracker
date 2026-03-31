@@ -8,6 +8,9 @@ easyocr
 scikit-learn
 joblib
 transformers
-torch
+torch 
+torchvision 
+torchaudio
 openpyxl
+easyocr
 jinja
