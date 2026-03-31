@@ -13,4 +13,4 @@ torchvision
 torchaudio
 openpyxl
 easyocr
-jinja
+
