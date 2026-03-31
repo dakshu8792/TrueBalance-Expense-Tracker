@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% set active = 'budgets' %}
+
+{% block title %}Budgets — SpendWise{% endblock %}
+{% block page_title %}Budgets{% endblock %}
+
+{% block topbar_actions %}
+<a href="/" class="btn btn-ghost btn-sm">← Back</a>
+{% endblock %}
+
+{% block content %}
+
+<div style="max-width:680px;">
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Monthly Budget Limits</div>
+        <div class="card-subtitle">Get alerted when you're close to your limit</div>
+      </div>
+    </div>
+
+    <form method="POST">
+      <div class="grid-2" style="margin-bottom:18px;">
+        {% for cat, icon, color in categories %}
+        <div style="display:flex;align-items:center;gap:10px;background:var(--surface2);padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);">
+          <span style="font-size:20px;min-width:24px;">{{ icon }}</span>
+          <div style="flex:1;">
+            <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;">{{ cat }}</div>
+            <div class="input-prefix">
+              <span>₹</span>
+              <input type="number" name="budget_{{ cat }}" class="form-control"
+                     placeholder="No limit"
+                     value="{{ budgets.get(cat, '') }}"
+                     step="1" min="0"
+                     style="padding:6px 10px 6px 24px;font-size:13px;">
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="flex-row">
+        <button type="submit" class="btn btn-primary btn-lg" style="flex:1;">
+          Save Budgets
+        </button>
+        <a href="/" class="btn btn-ghost btn-lg">Cancel</a>
+      </div>
+
+    </form>
+  </div>
+
+  <div class="alert alert-info" style="margin-top:16px;">
+    ℹ You'll see a warning on the dashboard when you've used 80%+ of a budget for the current month.
+  </div>
+</div>
+
+{% endblock %}

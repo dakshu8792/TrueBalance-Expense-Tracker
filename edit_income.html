@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Income — TrueBalance{% endblock %}
+{% block page_title %}Edit Income{% endblock %}
+
+{% block topbar_actions %}
+<a href="/" class="btn btn-ghost btn-sm">← Back</a>
+{% endblock %}
+
+{% block content %}
+
+<div style="max-width:440px;">
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Monthly Income</div>
+        <div class="card-subtitle">Used to calculate your balance</div>
+      </div>
+    </div>
+
+    <form method="POST">
+
+      <div class="form-group">
+        <label class="form-label" for="amount">Monthly Income (₹)</label>
+        <div class="input-prefix">
+          <span>₹</span>
+          <input type="number" id="amount" name="amount" class="form-control"
+                 value="{{ income }}" placeholder="0.00" step="0.01" min="0" required>
+        </div>
+      </div>
+
+      <div class="flex-row" style="margin-top:8px;">
+        <button type="submit" class="btn btn-primary btn-lg" style="flex:1;">
+          Save Income
+        </button>
+        <a href="/" class="btn btn-ghost btn-lg">Cancel</a>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+{% endblock %}

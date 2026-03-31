@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}TrueBalance{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div style="position:fixed;top:16px;right:16px;z-index:9999;max-width:340px;">
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ cat if cat != 'message' else 'info' }} fade-in" style="margin-bottom:8px;box-shadow:0 4px 20px rgba(0,0,0,0.4);">
+          {% if cat == 'success' %}✓{% elif cat == 'danger' %}✕{% elif cat == 'warning' %}⚠{% else %}ℹ{% endif %}
+          {{ msg }}
+        </div>
+      {% endfor %}
+    </div>
+    <script>
+      setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(el => {
+          el.style.transition = 'opacity .4s';
+          el.style.opacity = '0';
+          setTimeout(() => el.remove(), 400);
+        });
+      }, 3500);
+    </script>
+  {% endif %}
+{% endwith %}
+
+<div class="app-shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">💰</div>
+      <div>
+        <div class="sidebar-brand-name">TrueBalance</div>
+        <div class="sidebar-brand-sub">Expense Tracker</div>
+      </div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="avatar">{{ username[0] if username else 'U' }}</div>
+      <div>
+        <div class="user-name">{{ username }}</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-label">Main</div>
+        <a href="/" class="nav-link {% if active == 'dashboard' %}active{% endif %}">
+          <span class="nav-icon">📊</span> Dashboard
+        </a>
+        <a href="/add" class="nav-link {% if active == 'add' %}active{% endif %}">
+          <span class="nav-icon">➕</span> Add Expense
+        </a>
+        <a href="/reports" class="nav-link {% if active == 'reports' %}active{% endif %}">
+          <span class="nav-icon">📈</span> Reports
+        </a>
+        <a href="/budgets" class="nav-link {% if active == 'budgets' %}active{% endif %}">
+          <span class="nav-icon">🎯</span> Budgets
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Tools</div>
+        <a href="/scan_receipt" class="nav-link {% if active == 'scan' %}active{% endif %}">
+          <span class="nav-icon">📷</span> Scan Receipt
+        </a>
+        <a href="/export_excel" class="nav-link">
+          <span class="nav-icon">📥</span> Export Excel
+        </a>
+      </div>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <a href="/logout" class="nav-link" style="color:var(--red);">
+        <span class="nav-icon">🚪</span> Logout
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-title">{% block page_title %}Dashboard{% endblock %}</div>
+      <div class="topbar-actions">
+        {% block topbar_actions %}
+        <a href="/add" class="btn btn-primary btn-sm">
+          <span>+</span> New Expense
+        </a>
+        {% endblock %}
+      </div>
+    </div>
+
+    <div class="page fade-in">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+</div>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

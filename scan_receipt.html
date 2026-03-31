@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% set active = 'scan' %}
+
+{% block title %}Scan Receipt — TrueBalance{% endblock %}
+{% block page_title %}Scan Receipt{% endblock %}
+
+{% block topbar_actions %}
+<a href="/" class="btn btn-ghost btn-sm">← Back</a>
+{% endblock %}
+
+{% block content %}
+
+<div style="max-width:520px;">
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Receipt Scanner</div>
+        <div class="card-subtitle">Upload a receipt image — we'll extract the details automatically</div>
+      </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" id="uploadForm">
+
+      <label class="upload-zone" for="receiptInput" id="uploadZone">
+        <input type="file" id="receiptInput" name="receipt" accept="image/*"
+               required onchange="previewFile(this)">
+        <div id="uploadContent">
+          <div class="upload-zone-icon">📷</div>
+          <div class="upload-zone-text">Click to upload receipt image</div>
+          <div class="upload-zone-hint">JPG, PNG, WEBP — max 10 MB</div>
+        </div>
+        <img id="preview" style="display:none;max-width:100%;max-height:220px;border-radius:8px;margin-top:10px;" alt="preview">
+      </label>
+
+      <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:16px;" id="scanBtn">
+        🔍 Scan & Save Receipt
+      </button>
+
+    </form>
+
+    <div class="alert alert-info" style="margin-top:16px;font-size:13px;">
+      ℹ Requires Tesseract OCR, OpenCV and Pillow to be installed on the server.
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-header">
+      <div class="card-title">Manual Entry (Alternative)</div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">
+      Prefer to enter manually? Use the Add Expense page.
+    </p>
+    <a href="/add" class="btn btn-ghost">Go to Add Expense →</a>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function previewFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('preview').src = e.target.result;
+    document.getElementById('preview').style.display = 'block';
+    document.getElementById('uploadContent').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+document.getElementById('uploadForm').addEventListener('submit', () => {
+  document.getElementById('scanBtn').textContent = '⏳ Scanning…';
+  document.getElementById('scanBtn').disabled = true;
+});
+</script>
+{% endblock %}

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> — Create Account</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="auth-page">
+  <div class="auth-panel">
+    <div class="auth-card fade-in">
+
+      <div class="auth-logo">
+        <div class="auth-logo-icon">💰</div>
+        <div>
+          <div class="auth-logo-text">SpendWise</div>
+          <div class="auth-logo-sub">Smart Expense Tracker</div>
+        </div>
+      </div>
+
+      <div class="auth-heading">Create account</div>
+      <div class="auth-subheading">Start tracking your expenses today</div>
+
+      {% if error %}
+      <div class="alert alert-danger">✕ {{ error }}</div>
+      {% endif %}
+
+      <form method="POST" id="regForm">
+
+        <div class="form-group">
+          <label class="form-label" for="username">Username</label>
+          <input type="text" id="username" name="username" class="form-control"
+                 placeholder="Choose a username" required minlength="3">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <div class="pass-wrap">
+            <input type="password" id="password" name="password" class="form-control"
+                   placeholder="At least 6 characters" required minlength="6">
+            <button type="button" class="pass-toggle" onclick="togglePass('password', this)">👁</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="confirm_password">Confirm Password</label>
+          <div class="pass-wrap">
+            <input type="password" id="confirm_password" name="confirm_password" class="form-control"
+                   placeholder="Repeat password" required>
+            <button type="button" class="pass-toggle" onclick="togglePass('confirm_password', this)">👁</button>
+          </div>
+          <div id="matchMsg" style="font-size:12px;margin-top:5px;"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:8px;">
+          Create Account →
+        </button>
+
+      </form>
+
+      <div class="auth-footer">
+        Already have an account? <a href="/login">Sign in</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function togglePass(id, btn) {
+    const f = document.getElementById(id);
+    const vis = f.type === 'text';
+    f.type = vis ? 'password' : 'text';
+    btn.textContent = vis ? '👁' : '🙈';
+  }
+
+  const p1 = document.getElementById('password');
+  const p2 = document.getElementById('confirm_password');
+  const msg = document.getElementById('matchMsg');
+
+  function checkMatch() {
+    if (!p2.value) { msg.textContent = ''; return; }
+    if (p1.value === p2.value) {
+      msg.style.color = 'var(--green)';
+      msg.textContent = '✓ Passwords match';
+    } else {
+      msg.style.color = 'var(--red)';
+      msg.textContent = '✕ Passwords do not match';
+    }
+  }
+  p1.addEventListener('input', checkMatch);
+  p2.addEventListener('input', checkMatch);
+
+  document.getElementById('regForm').addEventListener('submit', e => {
+    if (p1.value !== p2.value) {
+      e.preventDefault();
+      msg.style.color = 'var(--red)';
+      msg.textContent = '✕ Passwords do not match';
+    }
+  });
+</script>
+</body>
+</html>

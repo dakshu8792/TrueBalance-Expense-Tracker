@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% set active = 'add' %}
+
+{% block title %}Add Expense — SpendWise{% endblock %}
+{% block page_title %}Add Expense{% endblock %}
+
+{% block topbar_actions %}
+<a href="/" class="btn btn-ghost btn-sm">← Back</a>
+{% endblock %}
+
+{% block content %}
+
+<div style="max-width:520px;">
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">New Expense</div>
+        <div class="card-subtitle">Track where your money goes</div>
+      </div>
+    </div>
+
+    <form method="POST" id="addForm">
+
+      <div class="form-group">
+        <label class="form-label" for="date">Date</label>
+        <input type="date" id="date" name="date" class="form-control"
+               value="{{ today }}" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="category">Category</label>
+        <select id="category" name="category" class="form-control" required>
+          {% for cat, icon, _ in categories %}
+          <option value="{{ cat }}">{{ icon }} {{ cat }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="amount">Amount (₹)</label>
+        <div class="input-prefix">
+          <span>₹</span>
+          <input type="number" id="amount" name="amount" class="form-control"
+                 placeholder="0.00" step="0.01" min="0.01" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="description">Description</label>
+        <input type="text" id="description" name="description" class="form-control"
+               placeholder="What did you spend on?" maxlength="200">
+      </div>
+
+      <!-- Category preview pill -->
+      <div style="margin-bottom:18px;">
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">Preview</div>
+        <span id="catPreview" class="badge" style="font-size:13px;">🍔 Food</span>
+      </div>
+
+      <div class="flex-row">
+        <button type="submit" class="btn btn-primary btn-lg" style="flex:1;">
+          Save Expense
+        </button>
+        <a href="/" class="btn btn-ghost btn-lg">Cancel</a>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+const catIcons = {
+  {% for cat, icon, color in categories %}
+  '{{ cat }}': { icon: '{{ icon }}', color: '{{ color }}' },
+  {% endfor %}
+};
+
+const catSel     = document.getElementById('category');
+const catPreview = document.getElementById('catPreview');
+
+function updatePreview() {
+  const val = catSel.value;
+  const info = catIcons[val] || { icon: '📦', color: '#6b7280' };
+  catPreview.textContent = info.icon + ' ' + val;
+  catPreview.style.background = info.color + '22';
+  catPreview.style.color = info.color;
+}
+catSel.addEventListener('change', updatePreview);
+updatePreview();
+</script>
+{% endblock %}

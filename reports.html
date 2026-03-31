@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% set active = 'reports' %}
+
+{% block title %}Reports — SpendWise{% endblock %}
+{% block page_title %}Reports{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block topbar_actions %}
+<a href="/export_excel" class="btn btn-ghost btn-sm">📥 Export Excel</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="grid-2" style="margin-bottom:22px;">
+
+  <!-- Pie Chart -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Spending by Category</div>
+        <div class="card-subtitle">All-time breakdown</div>
+      </div>
+    </div>
+    {% if categories %}
+    <div class="chart-container" style="height:300px;">
+      <canvas id="pieChart"></canvas>
+    </div>
+    {% else %}
+    <div class="empty-state"><div class="empty-icon">📊</div><p>No data yet</p></div>
+    {% endif %}
+  </div>
+
+  <!-- Monthly Line Chart -->
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Monthly Trend</div>
+        <div class="card-subtitle">Spending over time</div>
+      </div>
+    </div>
+    {% if monthly_labels %}
+    <div class="chart-container" style="height:300px;">
+      <canvas id="trendChart"></canvas>
+    </div>
+    {% else %}
+    <div class="empty-state"><div class="empty-icon">📈</div><p>No data yet</p></div>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- Category breakdown table -->
+{% if categories %}
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Category Breakdown</div>
+  </div>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr><th>Category</th><th>Total Spent</th><th>Share</th></tr>
+      </thead>
+      <tbody>
+        {% set total_sum = amounts | sum %}
+        {% for i in range(categories|length) %}
+        <tr>
+          <td>
+            <span class="badge badge-{{ categories[i]|lower }}">{{ categories[i] }}</span>
+          </td>
+          <td class="amount-negative">₹{{ "%.2f"|format(amounts[i]) }}</td>
+          <td style="width:200px;">
+            {% set pct = (amounts[i] / total_sum * 100)|round(1) if total_sum > 0 else 0 %}
+            <div class="flex-row" style="gap:8px;">
+              <div class="progress-bar-wrap" style="flex:1;">
+                <div class="progress-bar-fill" style="width:{{ pct }}%;background:var(--blue);"></div>
+              </div>
+              <span style="font-size:12px;color:var(--text-muted);min-width:36px;">{{ pct }}%</span>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+Chart.defaults.color = '#8892a4';
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+
+const catColors = {
+  'Food':'#f97316','Travel':'#3b82f6','Shopping':'#8b5cf6','Bills':'#ef4444',
+  'Rent':'#6366f1','Entertainment':'#ec4899','Health':'#10b981','Education':'#f59e0b','Other':'#6b7280'
+};
+
+{% if categories %}
+const cats    = {{ categories | tojson | safe }};
+const amounts = {{ amounts   | tojson | safe }};
+
+new Chart(document.getElementById('pieChart'), {
+  type: 'doughnut',
+  data: {
+    labels: cats,
+    datasets: [{
+      data: amounts,
+      backgroundColor: cats.map(c => catColors[c] || '#6b7280'),
+      borderWidth: 2, borderColor: '#141926',
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '55%',
+    plugins: { legend: { position: 'bottom', labels: { padding: 12, font: { size: 12 } } } }
+  }
+});
+{% endif %}
+
+{% if monthly_labels %}
+const mLabels  = {{ monthly_labels  | tojson | safe }};
+const mAmounts = {{ monthly_amounts | tojson | safe }};
+
+new Chart(document.getElementById('trendChart'), {
+  type: 'line',
+  data: {
+    labels: mLabels,
+    datasets: [{
+      label: 'Expenses (₹)',
+      data: mAmounts,
+      borderColor: '#22d3a5',
+      backgroundColor: 'rgba(34,211,165,0.08)',
+      tension: 0.4, fill: true,
+      pointBackgroundColor: '#22d3a5',
+      pointBorderColor: '#141926',
+      pointBorderWidth: 2, pointRadius: 5,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)' } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
+    }
+  }
+});
+{% endif %}
+</script>
+{% endblock %}

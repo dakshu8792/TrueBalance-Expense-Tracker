@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrueBalance — Login</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="auth-page">
+  <div class="auth-panel">
+    <div class="auth-card fade-in">
+
+      <div class="auth-logo">
+        <div class="auth-logo-icon">💰</div>
+        <div>
+          <div class="auth-logo-text"></div>
+          <div class="auth-logo-sub">Smart Expense Tracker</div>
+        </div>
+      </div>
+
+      <!-- Monkey -->
+      <div class="monkey-wrap">
+        <span id="monkey" class="monkey">🐵</span>
+      </div>
+
+      <div class="auth-heading">Welcome back</div>
+      <div class="auth-subheading">Sign in to your account</div>
+
+      {% if error %}
+      <div class="alert alert-danger" style="margin-bottom:16px;">
+        ✕ {{ error }}
+      </div>
+      {% endif %}
+
+      <form method="POST">
+
+        <div class="form-group">
+          <label class="form-label" for="username">Username</label>
+          <input type="text" id="username" name="username" class="form-control"
+                 placeholder="Enter username" autocomplete="username" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <div class="pass-wrap">
+            <input type="password" id="password" name="password" class="form-control"
+                   placeholder="Enter password" autocomplete="current-password" required>
+            <button type="button" class="pass-toggle" id="eyeBtn" onclick="togglePass()">👁</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:8px;">
+          Sign in →
+        </button>
+
+      </form>
+
+      <div class="auth-footer">
+        No account? <a href="/register">Create one</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const monkey   = document.getElementById('monkey');
+  const username = document.getElementById('username');
+  const password = document.getElementById('password');
+  let passVisible = false;
+
+  username.addEventListener('input', () => {
+    monkey.textContent = username.value.length > 0 ? '🙉' : '🐵';
+  });
+  password.addEventListener('focus', () => { monkey.textContent = '🙈'; });
+  password.addEventListener('blur',  () => { monkey.textContent = username.value.length ? '🙉' : '🐵'; });
+
+  function togglePass() {
+    passVisible = !passVisible;
+    password.type = passVisible ? 'text' : 'password';
+    document.getElementById('eyeBtn').textContent = passVisible ? '🙈' : '👁';
+    monkey.textContent = passVisible ? '🐵' : '🙈';
+  }
+</script>
+</body>
+</html>

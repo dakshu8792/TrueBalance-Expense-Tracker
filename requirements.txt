@@ -1,0 +1,12 @@
+flask
+gunicorn
+pytesseract
+opencv-python
+pillow
+numpy
+easyocr
+scikit-learn
+joblib
+transformers
+torch
+openpyxl
